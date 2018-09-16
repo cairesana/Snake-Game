@@ -1,32 +1,41 @@
 var game = {};
 
 game.canvas = document.getElementById("myCanvas");
-game.frameRate = 100; //velocidade do jogo - tempo que atualizo a tela milisegundos
+game.frameRate = 100; // velocidade do jogo - tempo que atualizo a tela milisegundos
 game.snake = {
                 direction: 'south',
                 bodyPartSize: 12,
                 body: [
-                        {x:400, y:20},     //duas bolinhas
+                        {x:400, y:20},     // create two balls = snake's head
                         {x:400, y:8}
                 ]
         };
 
-//creating boardgame using canvas
+game.apples = [];
+
+// create boardgame using canvas
 var ctx = game.canvas.getContext("2d"); // getContext() is a built-in html object, with properties and methods for drawing. ctx var will store the 2D rendering context (the actual tool we can use to paint on the Canvas).
         
-//drawing the ball in canvas (snake's food)
-var randomX = Math.floor(Math.random() * Math.floor(800)); //(max): 800 x 600 = tamanho maximo (myCanvas)
-var randomY = Math.floor(Math.random() * Math.floor(600));
-        
-ctx.beginPath();    //beginPath and closePath methods.. 
-ctx.arc(randomX, randomY, 5, 0, Math.PI*2, false); // arc method takes 6 parameters: x and y: coordinates of the arc's center; - arc radius 
-                                                    // - start angle and end angle (to start and finish drawing the circle, in radians)
-                                                    // - direction of drawing, false: clockwise, the default, or true: anti-clockwise. Last param is optional
-ctx.fillStyle = "rgba(0, 255, 0, 1)"; //fillStyle property stores a color that will be used by the fill() method 
-ctx.fill(); //this method paints the ball
-ctx.strokeStyle = "rgba(0, 120, 0, 1)"; //rgba - red green blue alpha (a= opacity)
-ctx.stroke(); //stroke faz borda, sem preencher dentro
-ctx.closePath();
+// draw apple in canvas (snake's food colored ball): 
+// create apple random location
+function createNewApple() { 
+        var randomX = Math.floor(Math.random() * Math.floor(800)); //(max): 800 x 600 = tamanho maximo (myCanvas)
+        var randomY = Math.floor(Math.random() * Math.floor(600));
+
+        game.apples.push({x: randomX, y: randomY}); // saves apple in apple's []
+}
+
+function drawApple() {
+        game.apples.forEach(function(element) {
+                ctx.beginPath();    // starts with beginPath and ends with closePath methods.. 
+                ctx.arc(element.x, element.y, 5, 0, Math.PI*2, false); // (x, y (coordinates of arc's center in radious), start angle, end angle (to start and finish drawing in radians), direction of drawing, false: clockwise, true: anti-clockwise)
+                ctx.fillStyle = "rgba(0, 255, 0, 1)"; // fillStyle property stores a color that will be used by the fill() method 
+                ctx.fill(); // paints the circle
+                ctx.strokeStyle = "rgba(0, 120, 0, 1)"; // rgba - red green blue alpha (a= opacity) - border's color
+                ctx.stroke(); // add border 
+                ctx.closePath();
+        });
+}
         
 
 // draw snake 
@@ -49,7 +58,7 @@ function moveSnake() {
 
         switch (game.snake.direction) {
                 case 'north': // cima -- decrementa o y e permanece x igual
-                        newX = snakeBody[0].x;
+                        newX = snakeBody[0].x;  // [0] = getting sneak's head (first ball)
                         newY = snakeBody[0].y - game.snake.bodyPartSize;
                         break;
                 case 'east': // direita -- incrementa o x e permanece y igual
@@ -71,11 +80,22 @@ function moveSnake() {
         //console.log(game.snake.body);
 }
 
+
+// detectar colisao 
+
+
+// funcao comer maca - cresce cobra e some maca 
+
+
 //setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
         ctx.clearRect(0, 0, 800, 600);
         moveSnake();
         drawSnake();
+        if(game.apples.length < 3) {
+                createNewApple();
+        }
+        drawApple();
         setTimeout(execGameLoop, game.frameRate);
 }
 
