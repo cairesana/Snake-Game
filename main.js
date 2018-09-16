@@ -28,7 +28,7 @@ function createNewApple() {
 function drawApple() {
         game.apples.forEach(function(element) {
                 ctx.beginPath();    // starts with beginPath and ends with closePath methods.. 
-                ctx.arc(element.x, element.y, 5, 0, Math.PI*2, false); // (x, y (coordinates of arc's center in radious), start angle, end angle (to start and finish drawing in radians), direction of drawing, false: clockwise, true: anti-clockwise)
+                ctx.arc(element.x, element.y, 3, 0, Math.PI*2, true); // (x, y (coordinates of arc's center in radious), start angle, end angle (to start and finish drawing in radians), direction of drawing, false: clockwise, true: anti-clockwise)
                 ctx.fillStyle = "rgba(0, 255, 0, 1)"; // fillStyle property stores a color that will be used by the fill() method 
                 ctx.fill(); // paints the circle
                 ctx.strokeStyle = "rgba(0, 120, 0, 1)"; // rgba - red green blue alpha (a= opacity) - border's color
@@ -44,7 +44,7 @@ var initialSnake = game.canvas.getContext("2d");
 function drawSnake() {
         game.snake.body.forEach(function (element) {
                 initialSnake.beginPath();
-                initialSnake.arc(element.x, element.y, game.snake.bodyPartSize, 0, Math.PI*2, false);
+                initialSnake.arc(element.x, element.y, game.snake.bodyPartSize, 0, Math.PI*2, true);
                 initialSnake.fillStyle = "rgba(255, 255, 255, 1)";
                 initialSnake.fill();
                 initialSnake.closePath();
@@ -81,15 +81,29 @@ function moveSnake() {
 }
 
 
-// detectar colisao 
-
+// collision detector 
+function collisionDetector() {
+        // Detect colisao com a maca
+        game.apples.forEach(function(element) {
+                if (
+                    (element.x >= game.snake.body[0].x && (element.x + 1.5) <= (game.snake.body[0].x + game.snake.bodyPartSize))
+                    && (element.y >= game.snake.body[0].y && (element.y + 1.5) <= (game.snake.body[0].y + game.snake.bodyPartSize))
+                ) {
+                        console.log(true);
+                        console.log(element, game.snake.body[0]);
+                }
+        });
+}
 
 // funcao comer maca - cresce cobra e some maca 
+function eatApple() {
 
+}
 
 //setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
         ctx.clearRect(0, 0, 800, 600);
+        collisionDetector();
         moveSnake();
         drawSnake();
         if(game.apples.length < 3) {
