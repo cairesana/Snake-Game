@@ -96,9 +96,9 @@ function collisionDetector() {
 }
 
 // funcao comer maca - cresce cobra e some maca 
-function eatApple() {
+// function eatApple() {
 
-}
+// }
 
 //setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
