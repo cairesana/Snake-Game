@@ -13,6 +13,8 @@ game.snake = {
 
 game.apples = [];
 
+var score = 0;
+
 // create boardgame using canvas
 var ctx = game.canvas.getContext("2d"); // getContext() is a built-in html object, with properties and methods for drawing. ctx var will store the 2D rendering context (the actual tool we can use to paint on the Canvas).
         
@@ -22,7 +24,7 @@ function createNewApple() {
         var randomX = Math.floor(Math.random() * Math.floor(800)); //(max): 800 x 600 = tamanho maximo (myCanvas)
         var randomY = Math.floor(Math.random() * Math.floor(600));
 
-        game.apples.push({x: randomX, y: randomY}); // saves apple in apple's []
+        game.apples.push({x: randomX, y: randomY}); //saves apple in apple's []
 }
 
 function drawApple() {
@@ -84,25 +86,39 @@ function moveSnake() {
 // collision detector 
 function collisionDetector() {
         // Detect colisao com a maca
-        game.apples.forEach(function(element) {
+        game.apples.forEach(function(element, index, object) {
                 if (
                     (element.x >= game.snake.body[0].x && (element.x + 1.5) <= (game.snake.body[0].x + game.snake.bodyPartSize))
                     && (element.y >= game.snake.body[0].y && (element.y + 1.5) <= (game.snake.body[0].y + game.snake.bodyPartSize))
                 ) {
-                        console.log(true);
-                        console.log(element, game.snake.body[0]);
+                        removeApple(index, object);
+                        score++;
                 }
         });
 }
 
-// funcao comer maca - cresce cobra e some maca 
-// function eatApple() {
+// eatApple makes the apple remove when collision is detected  
+function removeApple(index, object) {
+        object.splice(index, 1);
+        console.log(object, index);
+}
 
-// }
+//after eating apple snakes get bigger   // NAO FUNCIONA!!!
 
+
+
+//score
+function drawScore() {
+        ctx.fillStyle = "white";
+        ctx.font = "16px Arial";
+        ctx.fillText("Score: "+score, 10, 20);
+        };
+
+      
 //setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
         ctx.clearRect(0, 0, 800, 600);
+        drawScore();
         collisionDetector();
         moveSnake();
         drawSnake();
@@ -125,7 +141,7 @@ document.addEventListener('keydown', function(event) {
                         switch (keyCode) {
                                 case 37: //tecla left
                                         game.snake.direction = 'west';
-                                        event.preventDefault(); //impede de rolar  tela com tecla seta
+                                        event.preventDefault(); //impede de rolar tela com tecla seta
                                         break;
                 
                                 case 39: //tecla right
