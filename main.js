@@ -17,7 +17,20 @@ var score = 0;
 
 // create boardgame using canvas
 var ctx = game.canvas.getContext("2d"); // getContext() is a built-in html object, with properties and methods for drawing. ctx var will store the 2D rendering context (the actual tool we can use to paint on the Canvas).
-        
+
+//borders
+var canvasBorder = game.canvas.getContext("2d");
+function drawBorders() {
+        canvasBorder.beginPath();
+        canvasBorder.strokeStyle="red";
+        canvasBorder.lineWidth=10;
+        canvasBorder.rect(5, 40, 790, 555); //(x,y,width,height);
+        canvasBorder.stroke();
+        canvasBorder.closePath();
+}
+
+
+
 // draw apple in canvas (snake's food colored ball): 
 // create apple random location
 function createNewApple() { 
@@ -27,15 +40,17 @@ function createNewApple() {
         game.apples.push({x: randomX, y: randomY}); //saves apple in apple's []
 }
 
+var canvasApple = game.canvas.getContext("2d");
 function drawApple() {
         game.apples.forEach(function(element) {
-                ctx.beginPath();    // starts with beginPath and ends with closePath methods.. 
-                ctx.arc(element.x, element.y, 3, 0, Math.PI*2, true); // (x, y (coordinates of arc's center in radious), start angle, end angle (to start and finish drawing in radians), direction of drawing, false: clockwise, true: anti-clockwise)
-                ctx.fillStyle = "rgba(0, 255, 0, 1)"; // fillStyle property stores a color that will be used by the fill() method 
-                ctx.fill(); // paints the circle
-                ctx.strokeStyle = "rgba(0, 120, 0, 1)"; // rgba - red green blue alpha (a= opacity) - border's color
-                ctx.stroke(); // add border 
-                ctx.closePath();
+                canvasApple.beginPath();    // starts with beginPath and ends with closePath methods.. 
+                canvasApple.arc(element.x, element.y, 3, 0, Math.PI*2, true); // (x, y (coordinates of arc's center in radious), start angle, end angle (to start and finish drawing in radians), direction of drawing, false: clockwise, true: anti-clockwise)
+                canvasApple.fillStyle = "rgba(0, 255, 0, 1)"; // fillStyle property stores a color that will be used by the fill() method 
+                canvasApple.fill(); // paints the circle
+                canvasApple.strokeStyle = "rgba(0, 0, 0, 0)"; // rgba - red green blue alpha (a= opacity) - border's color
+                canvasApple.stroke(); // add border
+                canvasApple.lineWidth=0;
+                canvasApple.closePath();
         });
 }
         
@@ -106,18 +121,25 @@ function removeApple(index, object) {
 //after eating apple snakes get bigger   // NAO FUNCIONA!!!
 
 
+// function growSnake() {
+//         if(removeApple()) {
+//                 console.log("oi");  //condicao pra add um item novo no array 
+//         } 
+// };
+
 
 //score
 function drawScore() {
         ctx.fillStyle = "white";
         ctx.font = "16px Arial";
         ctx.fillText("Score: "+score, 10, 20);
-        };
+};
 
       
 //setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
         ctx.clearRect(0, 0, 800, 600);
+        drawBorders();
         drawScore();
         collisionDetector();
         moveSnake();
