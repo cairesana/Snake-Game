@@ -18,7 +18,7 @@ var score = 0;
 // create boardgame using canvas
 var ctx = game.canvas.getContext("2d"); // getContext() is a built-in html object, with properties and methods for drawing. ctx var will store the 2D rendering context (the actual tool we can use to paint on the Canvas).
 
-//borders
+// borders
 var canvasBorder = game.canvas.getContext("2d");
 function drawBorders() {
         canvasBorder.beginPath();
@@ -69,32 +69,32 @@ function drawSnake() {
 }
 
 function moveSnake() {
-        var snakeBody = game.snake.body;
         var newX; 
         var newY;
 
         switch (game.snake.direction) {
                 case 'north': // cima -- decrementa o y e permanece x igual
-                        newX = snakeBody[0].x;  // [0] = getting sneak's head (first ball)
-                        newY = snakeBody[0].y - game.snake.bodyPartSize;
+                        newX = game.snake.body[0].x;  // [0] = getting sneak's head (first ball)
+                        newY = game.snake.body[0].y - game.snake.bodyPartSize;
                         break;
                 case 'east': // direita -- incrementa o x e permanece y igual
-                        newX = snakeBody[0].x + game.snake.bodyPartSize;
-                        newY = snakeBody[0].y;
+                        newX = game.snake.body[0].x + game.snake.bodyPartSize;
+                        newY = game.snake.body[0].y;
                         break;
                 case 'south': // baixo -- incrementa o y e permanece x igual
-                        newX = snakeBody[0].x;
-                        newY = snakeBody[0].y + game.snake.bodyPartSize;
+                        newX = game.snake.body[0].x;
+                        newY = game.snake.body[0].y + game.snake.bodyPartSize;
                         break;
                 case 'west': // esquerda -- decrementa o x e permanece y igual
-                        newX = snakeBody[0].x - game.snake.bodyPartSize;
-                        newY = snakeBody[0].y;
+                        newX = game.snake.body[0].x - game.snake.bodyPartSize;
+                        newY = game.snake.body[0].y;
                         break;
         }
-        snakeBody.pop();
-        snakeBody.push({x: newX, y: newY});
-        snakeBody.reverse();
-        //console.log(game.snake.body);
+
+        game.snake.body.pop();
+        game.snake.body.unshift({x: newX, y: newY});
+        // game.snake.body.reverse();
+        // console.log(game.snake.body);
 }
 
 
@@ -107,28 +107,31 @@ function collisionDetector() {
                     && (element.y >= game.snake.body[0].y && (element.y + 1.5) <= (game.snake.body[0].y + game.snake.bodyPartSize))
                 ) {
                         removeApple(index, object);
+                        growSnake();
                         score++;
                 }
         });
 }
 
-// eatApple makes the apple remove when collision is detected  
+// apple gets removed when collision is detected  
 function removeApple(index, object) {
         object.splice(index, 1);
-        console.log(object, index);
+        console.log(object, index);  //remover depois
 }
 
-//after eating apple snakes get bigger   // NAO FUNCIONA!!!
+//after eating apple snakes get bigger   
+function growSnake() {
+        var snakeLastBodyPart = game.snake.body[game.snake.body.length - 1];
+        var newBodyPartX;
+        var newBodyPartY;
+        //console.log(snakeLastBodyPart);
+             
+        game.snake.body.splice(game.snake.body.length, 0, {x: newBodyPartX, y: newBodyPartY});
+        //console.log("grow snake", game.snake.body);
+} 
 
 
-// function growSnake() {
-//         if(removeApple()) {
-//                 console.log("oi");  //condicao pra add um item novo no array 
-//         } 
-// };
-
-
-//score
+// score
 function drawScore() {
         ctx.fillStyle = "white";
         ctx.font = "16px Arial";
@@ -136,7 +139,7 @@ function drawScore() {
 };
 
       
-//setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
+// setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
         ctx.clearRect(0, 0, 800, 600);
         drawBorders();
