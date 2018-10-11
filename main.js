@@ -6,12 +6,13 @@ game.snake = {
                 direction: 'south',
                 bodyPartSize: 12,
                 body: [
-                        {x:400, y:20},     // create two balls = snake's head
-                        {x:400, y:8}
+                        {x:400, y:80},     // create two balls = snake's head
+                        {x:400, y:68}
                 ]
         };
 
 game.apples = [];
+game.gameOver = 0; // 0 = false
 
 var score = 0;
 
@@ -28,7 +29,6 @@ function drawBorders() {
         canvasBorder.stroke();
         canvasBorder.closePath();
 }
-
 
 
 // draw apple in canvas (snake's food colored ball): 
@@ -59,13 +59,13 @@ function drawApple() {
 var initialSnake = game.canvas.getContext("2d");
 
 function drawSnake() {
-        game.snake.body.forEach(function (element) {
-                initialSnake.beginPath();
-                initialSnake.arc(element.x, element.y, game.snake.bodyPartSize, 0, Math.PI*2, true);
-                initialSnake.fillStyle = "rgba(255, 255, 255, 1)";
-                initialSnake.fill();
-                initialSnake.closePath();
-        });
+                game.snake.body.forEach(function (element) {
+                        initialSnake.beginPath();
+                        initialSnake.arc(element.x, element.y, game.snake.bodyPartSize, 0, Math.PI*2, true);
+                        initialSnake.fillStyle = "rgba(255, 255, 255, 1)";
+                        initialSnake.fill();
+                        initialSnake.closePath();
+                });
 }
 
 function moveSnake() {
@@ -91,10 +91,11 @@ function moveSnake() {
                         break;
         }
 
-        game.snake.body.pop();
-        game.snake.body.unshift({x: newX, y: newY});
-        // game.snake.body.reverse();
-        // console.log(game.snake.body);
+                game.snake.body.pop();
+                game.snake.body.unshift({x: newX, y: newY});
+                // game.snake.body.reverse();
+                //console.log(game.snake.body);
+        
 }
 
 
@@ -111,6 +112,13 @@ function collisionDetector() {
                         score++;
                 }
         });
+
+        // detect collision with borders -- x.left(20) - x.right(780) - y.top(55) - y.bottom(580)
+        if (game.snake.body[0].x < 20 || game.snake.body[0].x > 780 || game.snake.body[0].y < 55 || game.snake.body[0].y > 580) { 
+                console.log("GAME OVER");
+                drawGameOverMessage();
+                game.gameOver = 1; // 1 = true
+        }
 }
 
 // apple gets removed when collision is detected  
@@ -130,14 +138,31 @@ function growSnake() {
         //console.log("grow snake", game.snake.body);
 } 
 
+// draws a "game over" message (collision with border for now; for the future: also on snakes own body) 
+var gameOverMessage = game.canvas.getContext('2d');
+
+function drawGameOverMessage() {
+        gameOverMessage.beginPath();
+        gameOverMessage.font = '60px San serif';
+        gameOverMessage.fillText('Game Over', game.canvas.width/2, game.canvas.height/2);
+        gameOverMessage.fillStyle = "rgba(0, 0, 255, 0)";
+        gameOverMessage.lineWidth=20;
+        gameOverMessage.textAlign = "center";
+        gameOverMessage.closePath();
+      }
 
 // score
+var drawScoreOnCanvas = game.canvas.getContext('2d'); 
+
 function drawScore() {
-        ctx.fillStyle = "white";
-        ctx.font = "16px Arial";
-        ctx.fillText("Score: "+score, 10, 20);
+        drawScoreOnCanvas.beginPath();
+        drawScoreOnCanvas.fillStyle = "white";
+        drawScoreOnCanvas.font = "16px Arial";
+        drawScoreOnCanvas.fillText("Score: "+score, 40, 20);
+        drawScoreOnCanvas.closePath();
 };
 
+      
       
 // setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
@@ -145,13 +170,18 @@ function execGameLoop() {
         drawBorders();
         drawScore();
         collisionDetector();
-        moveSnake();
-        drawSnake();
-        if(game.apples.length < 3) {
-                createNewApple();
+
+        if (game.gameOver === 0) {
+                moveSnake();
+                if(game.apples.length < 3) {
+                        createNewApple();
+                }
+                var myTimeOut = setTimeout(execGameLoop, game.frameRate);
+        } else {
+                clearTimeout(myTimeOut);
         }
         drawApple();
-        setTimeout(execGameLoop, game.frameRate);
+        drawSnake();
 }
 
 execGameLoop();
