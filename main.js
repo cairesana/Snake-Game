@@ -24,8 +24,8 @@ var canvasBorder = game.canvas.getContext("2d");
 
 function drawBorders() {
         canvasBorder.beginPath();
-        canvasBorder.strokeStyle="red";
         canvasBorder.lineWidth=10;
+        canvasBorder.strokeStyle="red";
         canvasBorder.rect(5, 40, 790, 555); //(x,y,width,height);
         canvasBorder.stroke();
         canvasBorder.closePath();
@@ -63,7 +63,7 @@ function drawSnake() {
                 game.snake.body.forEach(function (element) {
                         initialSnake.beginPath();
                         initialSnake.arc(element.x, element.y, game.snake.bodyPartSize, 0, Math.PI*2, true);
-                        initialSnake.fillStyle = "rgba(255, 255, 255, 1)";
+                        initialSnake.fillStyle = 'rgb(255, 255, 255)';
                         initialSnake.fill();
                         initialSnake.closePath();
                 });
@@ -144,9 +144,10 @@ function growSnake() {
 var gameOverMessage = game.canvas.getContext('2d');
 
 function drawGameOverMessage() {
-        gameOverMessage.font = '60px Sans-serif';
-        gameOverMessage.fillStyle = 'rgb(27, 28, 28)';  
-        gameOverMessage.fillText('Game Over', 280, 300);
+        gameOverMessage.font = '60px San serif';  //nao ta mudando a letra
+        canvasBorder.lineWidth=2;
+        gameOverMessage.strokeStyle = 'rgba(27, 28, 28, 10)';  
+        gameOverMessage.strokeText('Game Over', 280, 300);
       }
 
 // Play again message
@@ -156,8 +157,6 @@ var gradientPlayAgain = playAgainMsg.createLinearGradient(0,0,game.canvas.width,
 
 function drawPlayAgainMessage() {
         playAgainMsg.font = '40px San serif';
-        // playAgainMsg.strokeStyle="rgb(0, 0, 255)";
-        //playAgainMsg.lineWidth=1;
         //create gradient
         gradientPlayAgain.addColorStop("0.82","red");
         gradientPlayAgain.addColorStop("0.7","yellow");
@@ -168,21 +167,14 @@ function drawPlayAgainMessage() {
 
         // fill with gradient
         playAgainMsg.fillStyle=gradientPlayAgain;
-        //playAgainMsg.lineWidth=1;
         playAgainMsg.fillText("Press ENTER to play again! :)",170,460);        
 }
-
-// como era antes a msg de restart with enter:
-//         playAgainMsg.font = '40px San serif';
-//         playAgainMsg.strokeStyle="rgb(0, 0, 255)";
-//         playAgainMsg.lineWidth=1;
-//         playAgainMsg.strokeText("Press ENTER to play again",300,560);
 
 // score
 var drawScoreOnCanvas = game.canvas.getContext('2d'); 
 
 function drawScore() {
-        drawScoreOnCanvas.font = "bold 16px Arial";
+        drawScoreOnCanvas.font = "bold 18px Arial";
         drawScoreOnCanvas.fillStyle = "white";
         drawScoreOnCanvas.fillText("Score: "+score, 20, 20);
 }
