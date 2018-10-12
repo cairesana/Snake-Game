@@ -21,14 +21,16 @@ var ctx = game.canvas.getContext("2d"); // getContext() is a built-in html objec
 
 // borders
 var canvasBorder = game.canvas.getContext("2d");
+
 function drawBorders() {
         canvasBorder.beginPath();
         canvasBorder.strokeStyle="red";
         canvasBorder.lineWidth=10;
         canvasBorder.rect(5, 40, 790, 555); //(x,y,width,height);
         canvasBorder.stroke();
+        canvasBorder.save(); 
         canvasBorder.closePath();
-}
+};
 
 
 // draw apple in canvas (snake's food colored ball): 
@@ -117,6 +119,7 @@ function collisionDetector() {
         if (game.snake.body[0].x < 20 || game.snake.body[0].x > 780 || game.snake.body[0].y < 55 || game.snake.body[0].y > 580) { 
                 console.log("GAME OVER");
                 drawGameOverMessage();
+                drawPlayAgainMessage();
                 game.gameOver = 1; // 1 = true
         }
 }
@@ -142,27 +145,37 @@ function growSnake() {
 var gameOverMessage = game.canvas.getContext('2d');
 
 function drawGameOverMessage() {
-        gameOverMessage.beginPath();
         gameOverMessage.font = '60px San serif';
-        gameOverMessage.fillText('Game Over', game.canvas.width/2, game.canvas.height/2);
-        gameOverMessage.fillStyle = "rgba(0, 0, 255, 0)";
-        gameOverMessage.lineWidth=20;
-        gameOverMessage.textAlign = "center";
-        gameOverMessage.closePath();
+        gameOverMessage.fillStyle = 'rgb(27, 28, 28)';  //TA HERDANDO COR BRANCA DA SCORE! TESTEI MUDANDO COR DA SCORE E MUDA O GAME OVER TB!!!
+        gameOverMessage.fillText('Game Over', 280, 300);
       }
+
+// Play again message
+var playAgainMsg = game.canvas.getContext('2d');
+
+function drawPlayAgainMessage() {
+        playAgainMsg.font = '40px San serif';
+        playAgainMsg.strokeStyle="rgb(0, 0, 255)";
+        playAgainMsg.lineWidth=1;
+        playAgainMsg.strokeText("Press ENTER to play again",300,560);        
+}
 
 // score
 var drawScoreOnCanvas = game.canvas.getContext('2d'); 
 
 function drawScore() {
-        drawScoreOnCanvas.beginPath();
-        drawScoreOnCanvas.fillStyle = "white";
-        drawScoreOnCanvas.font = "16px Arial";
+        drawScoreOnCanvas.font = "bold 16px Arial";
         drawScoreOnCanvas.fillText("Score: "+score, 40, 20);
-        drawScoreOnCanvas.closePath();
-};
+        drawScoreOnCanvas.fillStyle = "white";
+}
 
-      
+// restart when game over
+function restartGame() {
+        location.reload();  // reload page
+        //ctx.clearRect(0, 0, 800, 600); //nao funfou
+        // game.gameOver = 0; 
+        // execGameLoop();
+        }      
       
 // setInterval(drawSnake, 10); //execute draw function every 10 miliseconds - instead setinterval, I could also apply requestAnimationFrame().
 function execGameLoop() {
@@ -170,7 +183,6 @@ function execGameLoop() {
         drawBorders();
         drawScore();
         collisionDetector();
-
         if (game.gameOver === 0) {
                 moveSnake();
                 if(game.apples.length < 3) {
@@ -229,8 +241,14 @@ document.addEventListener('keydown', function(event) {
                                         break;
                         }
                 break;
-        }
-        
+        }  
+});
 
-        
+document.addEventListener('keypress', function (e) {
+        var keyEnter = e.keyCode;  //ou seria keyEnter? nome da var
+        console.log(e);
+
+        if (keyEnter === 13) {
+                restartGame();
+        }
 });
