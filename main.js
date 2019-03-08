@@ -4,7 +4,7 @@ game.canvas = document.getElementById("myCanvas");
 game.frameRate = 100; // velocidade do jogo - tempo que atualizo a tela milisegundos
 game.snake = {
                 direction: 'south',
-                bodyPartSize: 12,
+                bodyPartSize: 8, //12
                 body: [
                         {x:400, y:80},     // create two balls = snake's head
                         {x:400, y:68}
@@ -35,10 +35,24 @@ function drawBorders() {
 // draw apple in canvas (snake's food colored ball): 
 // create apple random location
 function createNewApple() { 
-        var randomX = Math.floor(Math.random() * Math.floor(800)); //(max): 800 x 600 = tamanho maximo (myCanvas)
-        var randomY = Math.floor(Math.random() * Math.floor(600));
+        //maxRandomX = 780
+        //minRandomX = 10
+        //maxRandomY = 585
+        //minRandomY = 50
+        var randomX = Math.floor(Math.random() * Math.floor(800)); // (myCanvas 800 x 600) 10 e 780
+        var randomY = Math.floor(Math.random() * Math.floor(600)); // 50 e 585
+        
+        if (randomX >= 10 && randomX <= 780 && randomY >= 50 && randomY <= 585) {
+                game.apples.push({x: randomX, y: randomY});        
+        } else {
+                console.log("out of range")
+                createNewApple() 
+        }
 
-        game.apples.push({x: randomX, y: randomY}); //saves apple in apple's []
+        //game.apples.push({x: randomX, y: randomY}); //saves apple in apple's []
+        console.log("x: ", randomX)
+        console.log("y: ", randomY)
+        // return Math.floor(Math.random() * (max - min + 1)) + min; pra range entre numeros
 }
 
 var canvasApple = game.canvas.getContext("2d");
@@ -105,8 +119,8 @@ function collisionDetector() {
         // Detect colisao com a maca
         game.apples.forEach(function(element, index, object) {
                 if (
-                    (element.x >= game.snake.body[0].x && (element.x + 1.5) <= (game.snake.body[0].x + game.snake.bodyPartSize))
-                    && (element.y >= game.snake.body[0].y && (element.y + 1.5) <= (game.snake.body[0].y + game.snake.bodyPartSize))
+                    (element.x >= game.snake.body[0].x && (element.x + 3.0) <= (game.snake.body[0].x + game.snake.bodyPartSize)) //1.5
+                    && (element.y >= game.snake.body[0].y && (element.y + 3.0) <= (game.snake.body[0].y + game.snake.bodyPartSize))
                 ) {
                         removeApple(index, object);
                         growSnake();
@@ -144,7 +158,7 @@ function growSnake() {
 var gameOverMessage = game.canvas.getContext('2d');
 
 function drawGameOverMessage() {
-        gameOverMessage.font = '60px San serif';  //nao ta mudando a letra
+        gameOverMessage.font = '60px San serif';  
         canvasBorder.lineWidth=2;
         gameOverMessage.strokeStyle = 'rgba(27, 28, 28, 10)';  
         gameOverMessage.strokeText('Game Over', 280, 300);
