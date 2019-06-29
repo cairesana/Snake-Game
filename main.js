@@ -38,7 +38,7 @@ var canvasBorder = game.canvas.getContext('2d');
 function drawBorders() {
         canvasBorder.beginPath();
         canvasBorder.lineWidth=10;
-        canvasBorder.strokeStyle='red';
+        canvasBorder.strokeStyle='rgba(139, 0, 0, 1)';
         canvasBorder.rect(5, 40, 790, 555); //(x, y, width, height);
         canvasBorder.stroke();
         canvasBorder.closePath();
@@ -122,7 +122,6 @@ function moveSnake() {
 
 
 // collision detector 
-// TO DO: collision also for: snake hits its own body  
 function collisionDetector() {
         // collision with apple
         game.apples.forEach(function(element, index, object) {
@@ -144,6 +143,9 @@ function collisionDetector() {
                 drawPlayAgainMessage();
                 game.gameOver = 1; 
         }
+
+        // TO DO: collision also for: snake hits its own body  
+
 }
 
 // remove apple when collision is detected  
@@ -197,9 +199,9 @@ function drawPlayAgainMessage() {
 var drawScoreOnCanvas = game.canvas.getContext('2d'); 
 
 function drawScore() {
-        drawScoreOnCanvas.font = 'bold 18px Arial';
+        drawScoreOnCanvas.font = 'bold 18px Mono';
         drawScoreOnCanvas.fillStyle = 'white';
-        drawScoreOnCanvas.fillText('Score: ' + game.score, 20, 20);
+        drawScoreOnCanvas.fillText('Score: ' + game.score, 10, 20);
 }
 
 // players name
